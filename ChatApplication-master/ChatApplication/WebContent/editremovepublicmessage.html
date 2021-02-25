@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="ISO-8859-1">
+<title>Edit/Remove Private Message</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<style>
+* {box-sizing: border-box;}
+
+.open-button {
+  background-color: #555;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  width: 280px;
+}
+
+/* The popup chat - hidden by default */
+.chat-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Full-width textarea */
+.form-container textarea {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  resize: none;
+  min-height: 200px;
+}
+
+/* When the textarea gets focus, do something */
+.form-container textarea:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for the submit/send button */
+.form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 5px 5px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+  background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+
+#delete_div{
+position:relative;
+top:20px;
+left:700px;
+}
+#delete_button{
+background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+#edit_button{
+background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+#button_modal{
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+#button_id {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+#button_id1{
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+#form_div{
+	position:relative;
+	top:150px;
+	left:300px;	
+}
+
+#show_message{
+position:relative;
+top:-40px;
+width:300px;
+left:800px;
+}
+#textarea_send{
+height:350px;
+}
+body{
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x:hidden;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #F49292;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #2196F3;
+  color: white;
+}
+
+.topnav .search-container {
+  float: right;
+}
+
+.topnav input[type=text] {
+  padding: 6px;
+  margin-top: 8px;
+  font-size: 17px;
+  border: none;
+}
+
+.topnav .search-container button {
+  float: right;
+  padding: 6px 10px;
+  margin-top: 8px;
+  margin-right: 16px;
+  background: #ddd;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+}
+::placeholder {
+  color: black;
+  opacity: 0.5; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+ color: black;
+ opacity: 0.5;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+ color: black;
+ opacity: 0.5;
+ }
+.topnav .search-container button:hover {
+  background: #ccc;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.input-field{
+width:250px;
+position:relative;
+top:222px;
+left:450px;
+}
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 80%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+  from {top:-300px; opacity:0} 
+  to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-footer {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+
+
+@media screen and (max-width: 600px) {
+  .topnav .search-container {
+    float: none;
+  }
+  .topnav a, .topnav input[type=text], .topnav .search-container button {
+    float: none;
+    display: block;
+    text-align: left;
+    width: 100%;
+    margin: 0;
+    padding: 14px;
+  }
+  .topnav input[type=text] {
+    border: 1px solid #ccc;  
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+
+<script>
+
+	$(document).ready(function(){
+		$('#button_id').click(function(){
+			$.get("showmessage", function(responseJson){
+				 var $table=$("<table border='1' style='position:relative;top:250px;left:0px;border:1px solid black' id='table_clone'>").appendTo($("#div_id"));
+				 var th1=$("<th>").appendTo($table);
+				  var th2=$("<th>").appendTo($table);
+				  var th3=$("<th>").appendTo($table);
+				  var th4=$("<th>").appendTo($table);
+				  var th5=$("<th>").appendTo($table);
+				  
+				  th1.append("Message ID");
+				  th2.append("Message");
+				  th3.append("Date Time");
+				  th4.append("Edit");
+				  th5.append("Remove");
+				  
+				  
+				 $.each(responseJson,function(dd){
+				 $("<tr>").appendTo($table)                  
+                .append($("<td>").text(responseJson[dd].message_id))       
+                .append($("<td>").text(responseJson[dd].message))
+                .append($("<td>").text(responseJson[dd].date))
+                .append($("<td>").append($("<button type='button' id='delete_button' class='delete_button'>Delete</button>")))
+                .append($("<td>").append($("<button type='button' id='edit_button' class='edit_button'>Edit</button>")));
+				});						
+			});
+		});
+	});
+</script> 
+
+<script>
+$(document).ready(function(){
+	$('body').on("click","#delete_button",function(){
+		var message_id=$("#message_idremove").val();
+		$.post("removepublicmessage",{text:message_id},function(){
+			alert("Deleted");
+			location.reload();
+		});
+	});	
+});
+</script>
+
+<div class="topnav">
+  <a href="/ChatApplication/Homepage.html"><img src="/ChatApplication/images/networking-group.png"></a>
+  <a href="/ChatApplication/Homepage.html">Home</a>
+  <a href="/ChatApplication/showpublicmessage.html">Show Public Message</a>
+  <a href="/ChatApplication/showprivatemessage.html">Show Private Message</a>
+  <a href="/ChatApplication/editprivatemessage.html">Edit Private Message</a>
+  <a href="/ChatApplication/editremovepublicmessage.html">Remove/Edit Public Message</a>
+  <a href="/ChatApplication/Search.html">Search</a>
+  <a href="/ChatApplication/logout">Logout</a>
+</div>
+
+
+<div class="input-field">
+                <input id="message_idremove" type="text" class="validate">
+<label>Message ID</label>
+</div>
+<button type="button" id="button_id" style="position:relative;top:150px;left:700px;">Show Messages</button>
+<div id="div_id">
+
+<div id="delete_div">
+
+</div>
+</div>
+
+
+
+
+
+
+<script>
+$(document).ready(function(){
+	
+	$('body').on("click","#edit_button",function(){
+		$("#editModal").show();
+	});
+	
+	$('body').on("click","#close_id",function(){
+		$("#editModal").hide();
+	});
+});
+
+</script>
+
+<script>
+$(document).ready(function(){
+	$('body').on("click","#edit_button",function(){
+			$.get("showmessage", function(responseJson){
+				 $.each(responseJson,function(dd){
+				 	var data=responseJson[dd].message;
+				    $(".modal-body").append("<div class='row'><div class='input-field col s12'><input disabled value="+responseJson[dd].message_id+" type='text' class='validate'></div></div>");
+				 	$(".modal-body").append("<input type='text' value=" +JSON.stringify(data)+" id='text_stringfy'>");
+				 	$(".modal-body").append("<button type='button' id='button_modal'>Update</button>");
+				 });				 						
+			});
+	});
+});
+
+</script>
+
+<script>
+$(document).ready(function(){
+	$('body').on("click","#button_modal",function(){
+		var message_id=$("#message_idremove1").val();
+		var message=$("#message_text").val();
+		$.post("editpublicmessages",{text:message_id+" "+message},function(){
+			alert("Updated");
+			location.reload();
+		});
+	});	
+});
+</script>
+
+<!-- Edit Modal -->
+
+<div id="editModal" class="modal">
+
+<!--Edit Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" id="close_id">&times;</span>
+      <h2>Edit</h2>
+    </div>
+    <div class="modal-body">
+    <p>Message ID</p>
+      <input type="text" id="message_idremove1">
+      <p>Message Text</p>
+      <input type="text" id="message_text">
+    </div>
+    
+    <div class="modal-footer">
+      <h3>Modal Footer</h3>
+    </div>
+  </div>
+  </div>
+<!-- Modal Script -->
+
+
+
+<script>
+function openForm() {
+  document.getElementById("myForm").style.display = "block";
+}
+
+function closeForm() {
+  document.getElementById("myForm").style.display = "none";
+}
+</script>
+
+
+
+</body>
+</html>
